@@ -14,20 +14,20 @@ export const uploadFile = asyncHandler(async (req, res) => {
   const isPDF = file.mimetype === "application/pdf";
 
   const result = await new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        folder: "drawings",
-        resource_type: isPDF ? "raw" : "image",
-        public_id: `file_${Date.now()}`,
-      },
-      (error, result) => {
-        if (error) reject(error);
-        else resolve(result);
-      }
-    );
+  const stream = cloudinary.uploader.upload_stream(
+    {
+      folder: "drawings",
+      resource_type: "auto", // 🔥 FIX
+      public_id: `file_${Date.now()}`,
+    },
+    (error, result) => {
+      if (error) reject(error);
+      else resolve(result);
+    }
+  );
 
-    stream.end(file.buffer);
-  });
+  stream.end(file.buffer);
+});
 
   return res.status(200).json({
     success: true,
