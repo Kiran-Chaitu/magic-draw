@@ -3,13 +3,12 @@ import multer from "multer";
 // Store in memory (best for direct upload to cloud)
 const storage = multer.memoryStorage();
 
-// File filter (only image + pdf)
+// File filter (only image + video)
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
   "image/png",
   "image/jpeg",
   "image/jpg",
-  "application/pdf",
   "video/mp4",
   "video/quicktime", // .mov
   "video/x-matroska", // .mkv (optional)
@@ -18,7 +17,7 @@ const fileFilter = (req, file, cb) => {
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only images, pdfs and videos are allowed"), false);
+    cb(new Error("Only images and videos are allowed"), false);
   }
 };
 

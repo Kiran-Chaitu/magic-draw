@@ -13,7 +13,6 @@ export const uploadFile = asyncHandler(async (req, res) => {
 
   const isVideo = file.mimetype.startsWith("video/");
   const isImage = file.mimetype.startsWith("image/");
-  const isPDF = file.mimetype === "application/pdf";
 
   const result = await new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -22,7 +21,10 @@ export const uploadFile = asyncHandler(async (req, res) => {
         resource_type: "auto",
         public_id: `file_${Date.now()}`,
 
+        // 🔥 Image optimization
         ...(isImage && { quality: "auto", fetch_format: "auto" }),
+
+        // 🔥 Video handling
         ...(isVideo && { chunk_size: 6000000 }),
       },
       (error, result) => {
@@ -34,18 +36,8 @@ export const uploadFile = asyncHandler(async (req, res) => {
     stream.end(file.buffer);
   });
 
-  // 🔥 FIX: Correct URL handling
-  let fileUrl = result.secure_url;
 
-  // ✅ Fix for PDF (VERY IMPORTANT)
-  if (result.format === "pdf") {
-    fileUrl = fileUrl.replace("/image/upload/", "/raw/upload/");
-  }
-
-  // ✅ Fix for videos (ensure proper delivery path)
-  if (result.resource_type === "video") {
-    fileUrl = fileUrl.replace("/image/upload/", "/video/upload/");
-  }
+  const fileUrl = result.secure_url;
 
   return res.status(200).json({
     success: true,

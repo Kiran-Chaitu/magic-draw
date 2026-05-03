@@ -22,7 +22,7 @@ app.use("/api", uploadRoutes);
 
 // Health check
 app.get("/", (req, res) => {
-  res.send("Backend running 🚀");
+  res.send("Backend running ");
 });
 
 // 404 handler
