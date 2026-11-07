@@ -20,7 +20,11 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api", uploadRoutes);
 
-// Health check
+// Health check (used by the keep-alive cron)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", uptime: process.uptime() });
+});
+
 app.get("/", (req, res) => {
   res.send("Backend running ");
 });
